@@ -1,3 +1,5 @@
+import matplotlib as mpl
+import networkx as nx
 from tkinter import *
 from tkinter import filedialog
 calls = []
@@ -33,3 +35,26 @@ button1= Button(root, text="koniec", command=exit)
 button.pack()
 button1.pack()
 root.mainloop()
+
+def DiGraphs(relationshipMap):
+    G = nx.DiGraph()
+    G.add_nodes_from(relationshipMap.items())
+    pairNode = []
+
+    for k, v in relationshipMap.items():
+        for key, value in v.items():
+            G.add_edges_from([(k, key)], weight=value)
+            pairNode.append((k, key))
+
+    pairWeight =dict([((u,v,),d['weight'])
+                 for u,v,d in G.edges(data=True)])
+
+    pos = nx.spring_layout(G)
+
+    nx.draw_networkx_nodes(G, pos, node_color = 'black', node_size = 250)
+    nx.draw_networkx_labels(G, pos)
+
+    nx.draw_networkx_edges(G, pos, edgelist=pairNode, edge_color='blue', arrows=True)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=pairWeight)
+    plt.savefig("graph.png")
+    plt.show()
